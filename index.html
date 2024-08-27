@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Simples com Criptografia</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="image-container">
+        <img src="michelly católica.png" alt="Imagem" class="header-image">
+    </div>
+    
+    <header>
+        <h1>Codificador da Michelly Católica</h1>
+    </header>
+
+    <main>
+        <div class="input-container">
+            <input type="text" id="text-input" placeholder="Digite seu texto aqui">
+            <div id="error-message" class="error-message"></div>
+            <div class="buttons">
+                <button class="encrypt-button" onclick="processText('encrypt')">Criptografar</button>
+                <button class="decrypt-button" onclick="processText('decrypt')">Descriptografar</button>
+            </div>
+        </div>
+        <div class="output-container">
+            <textarea id="encrypted-output" readonly placeholder="Nenhuma mensagem encontrada. Digite um texto que você deseja criptografar ou descriptografar."></textarea>
+            <button class="copy-button" onclick="copyToClipboard()">Copiar</button>
+        </div>
+    </main>
+
+    <div class="color-picker-container">
+        <label for="color-picker">Escolha a cor de fundo:</label>
+        <input type="color" id="color-picker">
+    </div>
+
+    <div class="container">
+        <div class="message">
+            Apenas letras minúsculas e espaços são aceitas.
+        </div>
+    </div>
+
+    <script>
+        // Função para limpar o texto e manter apenas letras minúsculas e espaços
+        function cleanText(text) {
+            return text
+                .toLowerCase() // Converte todo o texto para minúsculas
+                .replace(/[áéíóúãõâêîôûàèìòù]/g, '') // Remove acentos
+                .replace(/[^a-z\s]/g, ''); // Remove caracteres não alfabéticos, mas mantém espaços
+        }
+
+        // Função para verificar se o texto é válido
+        function isValidText(text) {
+            // Remove acentos e caracteres não permitidos e compara com o texto original
+            const cleanedText = cleanText(text);
+            // Verifica se o texto limpo tem o mesmo comprimento que o texto original, e se contém apenas letras minúsculas e espaços
+            return cleanedText.length === text.length && /^[a-z\s]*$/.test(text);
+        }
+
+        // Função para processar o texto com base na ação (criptografar ou descriptografar)
+        function processText(action) {
+            const inputText = document.getElementById('text-input').value;
+
+            if (!isValidText(inputText)) {
+                document.getElementById('error-message').textContent = 'Erro: O texto deve conter apenas letras minúsculas e espaços, sem acentos ou caracteres especiais.';
+                document.getElementById('encrypted-output').value = ''; // Limpa o campo de saída
+                return;
+            }
+
+            // Remove mensagem de erro se o texto for válido
+            document.getElementById('error-message').textContent = '';
+
+            let processedText;
+            if (action === 'encrypt') {
+                processedText = inputText
+                    .replace(/e/g, "enter")
+                    .replace(/i/g, "imes")
+                    .replace(/a/g, "ai")
+                    .replace(/o/g, "ober")
+                    .replace(/u/g, "ufat");
+            } else if (action === 'decrypt') {
+                processedText = inputText
+                    .replace(/enter/g, "e")
+                    .replace(/imes/g, "i")
+                    .replace(/ai/g, "a")
+                    .replace(/ober/g, "o")
+                    .replace(/ufat/g, "u");
+            }
+            document.getElementById('encrypted-output').value = processedText;
+        }
+
+        // Função para copiar o texto para a área de entrada
+        function copyToClipboard() {
+            const encryptedText = document.getElementById('encrypted-output').value;
+            navigator.clipboard.writeText(encryptedText).then(() => {
+                document.getElementById('text-input').value = encryptedText;
+                processText('encrypt'); // Opcional, criptografar o texto copiado ao colar no campo de entrada
+            }).catch(err => {
+                console.error('Erro ao copiar para a área de transferência:', err);
+            });
+        }
+
+        // Atualiza a cor de fundo com base na seleção do usuário
+        document.getElementById('color-picker').addEventListener('input', function() {
+            document.documentElement.style.setProperty('--bg-color', this.value);
+        });
+    </script>
+</body>
+</html>
